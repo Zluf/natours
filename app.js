@@ -76,6 +76,30 @@ app.patch('/api/v1/tours/:id', (req, res) => {
   });
 });
 
+app.delete('/api/v1/tours/:id', (req, res) => {
+  const id = +req.params.id;
+
+  if (+req.params.id > tours.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+
+  const newTours = tours.filter((tour) => tour.id !== id);
+
+  fs.writeFile(
+    `${__dirname}/dev-data/data/tours-simple.json`,
+    JSON.stringify(newTours),
+    (err) => {
+      res.status(201).json({
+        status: 'success',
+        data: null,
+      });
+    },
+  );
+});
+
 const port = 5000;
 
 app.listen(port, () => {
