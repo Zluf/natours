@@ -1,0 +1,15 @@
+{
+  "name": "natours",
+  "version": "1.0.0",
+  "description": "Learning Node, Express and Mongo.db",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Slav Konovalov",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "prettier": "^3.5.3"
+  }
+}
