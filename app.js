@@ -14,7 +14,6 @@ const userRouter = require('./routes/userRoutes');
 app.use(morgan('dev')); // MW logs req info
 
 app.use((req, res, next) => {
-  console.log('Hello from the middleware 👋🏼');
   req.requestTime = new Date().toISOString();
   next();
 });

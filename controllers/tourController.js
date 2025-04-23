@@ -4,12 +4,23 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`),
 );
 
+// Val can only be used with the :id param
 const checkID = (req, res, next, val) => {
   console.log(`Tour ID is ${val}`);
   if (+req.params.id > tours.length) {
     return res.status(404).json({
       status: 'fail',
       message: 'Invalid ID',
+    });
+  }
+  next();
+};
+
+const checkBody = (req, res, next) => {
+  if (!req.body.name || !req.body.price) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Bad request: missing name or price',
     });
   }
   next();
@@ -43,7 +54,7 @@ const createTour = (req, res) => {
   const newTour = Object.assign({ id: newId }, req.body);
   tours.push(newTour);
   fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
+    `${__dirname}/../dev-data/data/tours-simple.json`,
     JSON.stringify(tours),
     (err) => {
       res.status(201).json({
@@ -87,4 +98,5 @@ module.exports = {
   updateTour,
   deleteTour,
   checkID,
+  checkBody,
 };
