@@ -12,13 +12,15 @@ const userRouter = require('./routes/userRoutes');
  */
 
 app.use(morgan('dev')); // MW logs req info
-
+app.use(express.json()); // MW for adding body to requests
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
 
-app.use(express.json()); // MW for adding body to requests
+// MW that serves files in public folder
+// ("/public" should not be added in url)
+app.use(express.static(`${__dirname}/public`));
 
 // ▶️ ROUTEs
 
