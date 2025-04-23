@@ -11,12 +11,16 @@ const userRouter = require('./routes/userRoutes');
  * but not above. Placement of MW in the code matters
  */
 
-app.use(morgan('dev')); // MW logs req info
-app.use(express.json()); // MW for adding body to requests
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
+
+// MW logs req info
+if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
+
+// MW for adding body to requests
+app.use(express.json());
 
 // MW that serves files in public folder
 // ("/public" should not be added in url)
