@@ -11,6 +11,8 @@ Back-end driven app that serves info on travel tours
   - Atlas (database)
   - Mongoose (object data modeling library)
 
-## Methodology
+## MVC Design Pattern
 
-MVC (Model-View-Controller design pattern)
+Model - business logic
+View - presentation logic
+Controller - application logic
