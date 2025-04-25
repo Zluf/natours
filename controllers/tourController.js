@@ -49,6 +49,7 @@ const getTour = async (req, res) => {
 };
 
 // Create new document in db from input of req.body
+// * new ID automatically added upon creation
 const createTour = async (req, res) => {
   try {
     const newTour = await Tour.create(req.body);
