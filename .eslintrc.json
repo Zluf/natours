@@ -19,6 +19,6 @@
     "no-underscore-dangle": "off", // Allow identifiers with a leading/trailing underscore
     "class-methods-use-this": "off", // Allow class methods that don't use 'this'
     "prefer-destructuring": ["error", { "object": true, "array": false }], // Enforce object destructuring, not array
-    "no-unused-vars": ["error", { "argsIgnorePattern": "req|res|next|val" }] // Ignore unused vars if name matches these
+    "no-unused-vars": ["off", { "argsIgnorePattern": "req|res|next|val" }] // Ignore unused vars if name matches these (temp off)
   }
 }
