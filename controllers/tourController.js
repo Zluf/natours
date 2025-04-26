@@ -17,30 +17,30 @@ const checkBody = (req, res, next) => {
 
 const getAllTours = async (req, res) => {
   // ▪ BUILD QUERY
+
+  // - 1) Filtering
   const queryObj = { ...req.query };
+  console.log('queryObj:', queryObj);
   const excludedFields = ['page', 'sort', 'limit', 'fields'];
   excludedFields.forEach((el) => delete queryObj[el]);
 
-  console.log(req.query, queryObj);
+  // - 2) Advanced filtering
+  /** ...where we turn temporarily turn the query object into
+   * string to add "$" to operators (>,>=,<,<=)
+   */
+  let queryStr = JSON.stringify(queryObj);
+  console.log('queryStr:', queryStr);
 
-  const query = Tour.find(queryObj);
+  // Replace: /tours?duration[gte]=5 -> /tours?duration[$gte]=5
+  // \b - match exacts words: "gte", "gt", "lte", "lt", not just part of word
+  // g - all instances to be replaced
+  queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+  console.log('QUERY STR:', JSON.parse(queryStr));
 
-  // ▪ Filter way #1
-  // const query = await Tour.find({
-  //   difficulty: 'easy',
-  //   duration: 5,
-  // });
-
-  // ▪ Filter way #2
-  // const query = await Tour.find()
-  // .where('duration')
-  // .equals(5)
-  // .where('difficulty')
-  // .equals('easy');
+  const query = Tour.find(JSON.parse(queryStr));
 
   // ▪ EXECUTE QUERY
-
-  const tours = await Tour.find(req.query);
+  const tours = await query;
 
   // ▪ SEND RESPONSE
   try {
