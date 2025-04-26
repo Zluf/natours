@@ -16,7 +16,33 @@ const checkBody = (req, res, next) => {
 };
 
 const getAllTours = async (req, res) => {
-  const tours = await Tour.find();
+  // ▪ BUILD QUERY
+  const queryObj = { ...req.query };
+  const excludedFields = ['page', 'sort', 'limit', 'fields'];
+  excludedFields.forEach((el) => delete queryObj[el]);
+
+  console.log(req.query, queryObj);
+
+  const query = Tour.find(queryObj);
+
+  // ▪ Filter way #1
+  // const query = await Tour.find({
+  //   difficulty: 'easy',
+  //   duration: 5,
+  // });
+
+  // ▪ Filter way #2
+  // const query = await Tour.find()
+  // .where('duration')
+  // .equals(5)
+  // .where('difficulty')
+  // .equals('easy');
+
+  // ▪ EXECUTE QUERY
+
+  const tours = await Tour.find(req.query);
+
+  // ▪ SEND RESPONSE
   try {
     res.status(200).json({
       message: 'success',
