@@ -60,6 +60,8 @@ const tourSchema = new mongoose.Schema({
 
 // 2. Create a Model (eq. to Class) that enforces the Schema's requirements
 const Tour = mongoose.model('Tour', tourSchema);
+// Once Tour.create(object) is used a new "tours" db is created (if it didn't already exist)
+// The passed name "Tour" is converted to "tours" collection in Mongo DB database
 
 // 3. Create instance of a Model
 

@@ -18,29 +18,45 @@ const checkBody = (req, res, next) => {
 const getAllTours = async (req, res) => {
   // ▪ BUILD QUERY
 
-  // - 1) Filtering
+  // - 1A) Filtering
   const queryObj = { ...req.query };
-  console.log('queryObj:', queryObj);
+  // /tours?duration[gte]=5 -> { duration: { gte: 5 } }
+
   const excludedFields = ['page', 'sort', 'limit', 'fields'];
   excludedFields.forEach((el) => delete queryObj[el]);
 
-  // - 2) Advanced filtering
-  /** ...where we turn temporarily turn the query object into
-   * string to add "$" to operators (>,>=,<,<=)
-   */
+  // - 1B) Advanced filtering
+
+  // we temporarily turn the query object into
+  // string to add "$" to operators (>,>=,<,<=)
   let queryStr = JSON.stringify(queryObj);
   console.log('queryStr:', queryStr);
 
   // Replace: /tours?duration[gte]=5 -> /tours?duration[$gte]=5
+  queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
   // \b - match exacts words: "gte", "gt", "lte", "lt", not just part of word
   // g - all instances to be replaced
-  queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-  console.log('QUERY STR:', JSON.parse(queryStr));
 
-  const query = Tour.find(JSON.parse(queryStr));
+  // we don't yet return the promise
+  let query = Tour.find(JSON.parse(queryStr));
+
+  // - 2) Sorting
+
+  // /tours?sort=-price
+  // would sort documents in descending order of price
+  if (req.query.sort) {
+    // multiple query values e.g /tours?sort=-price,ratingsAverage
+    // are initally read as one string - { sort: '-price,ratingsAverage' }
+    const sortBy = req.query.sort.split(',').join(' ');
+    query = query.sort(sortBy);
+  } else {
+    query = query.sort('-createdAt');
+  }
 
   // ▪ EXECUTE QUERY
   const tours = await query;
+  // All the above could be replaced by just const tours = await Tour.find() which
+  // just fetch all the tour entries (documents) but we want things more elaborate
 
   // ▪ SEND RESPONSE
   try {

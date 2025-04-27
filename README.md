@@ -16,3 +16,22 @@ Back-end driven app that serves info on travel tours
 Model - business logic
 View - presentation logic
 Controller - application logic
+
+## Mongoose notes
+
+- Model methods - for manipulating documents (entries / objects)
+  .create()
+  .save()
+  .findByIdAndUpdate()
+  .findByIdAndDelete()
+
+- Query methods - for retrieval
+  .find()
+  .findOne()
+  .findById()
+  .sort()
+  .limit()
+
+- Mixed - retrieve and manipulate
+  .updateMany()
+  .deleteMany()
