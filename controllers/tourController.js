@@ -37,7 +37,9 @@ const getAllTours = async (req, res) => {
   // \b - match exacts words: "gte", "gt", "lte", "lt", not just part of word
   // g - all instances to be replaced
 
-  // we don't yet return the promise
+  // Here we declare what we want to fetch
+  // to then use all kinds of query methods
+  // (we don't yet return the promise)
   let query = Tour.find(JSON.parse(queryStr));
 
   // - 2) Sorting
@@ -53,7 +55,19 @@ const getAllTours = async (req, res) => {
     query = query.sort('-createdAt');
   }
 
+  // - 3) Field limiting (projecting)
+
+  if (req.query.fields) {
+    const fields = req.query.fields.split(',').join(' ');
+    query.select(fields);
+  } else {
+    // we exclude that field bc it's no use to the user
+    query = query.select('-__v');
+  }
+
   // ▪ EXECUTE QUERY
+
+  // Here we actually return the promise
   const tours = await query;
   // All the above could be replaced by just const tours = await Tour.find() which
   // just fetch all the tour entries (documents) but we want things more elaborate

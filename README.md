@@ -19,6 +19,10 @@ Controller - application logic
 
 ## Mongoose notes
 
+1. A Schema is created
+2. A Model is created based on a Schema
+3. A Collection in DB is created once .create() is used with the Model
+
 - Model methods - for manipulating documents (entries / objects)
   .create()
   .save()
@@ -32,6 +36,6 @@ Controller - application logic
   .sort()
   .limit()
 
-- Mixed - retrieve and manipulate
+- Mixed (still Query tho) - retrieve and manipulate
   .updateMany()
   .deleteMany()
