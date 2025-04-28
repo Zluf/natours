@@ -15,6 +15,15 @@ const checkBody = (req, res, next) => {
   next();
 };
 
+const aliasTopTours = async (req, res, next) => {
+  // we don't need to send response
+  // the query fields will be processed by getAllTours
+  req.query.limit = '5';
+  req.query.sort = '-ratingAverage,price';
+  req.query.fields = 'name,price,ratingAverage,summary,difficulty';
+  next();
+};
+
 const getAllTours = async (req, res) => {
   try {
     // ▪ BUILD QUERY
@@ -178,4 +187,5 @@ module.exports = {
   updateTour,
   deleteTour,
   checkBody,
+  aliasTopTours,
 };
