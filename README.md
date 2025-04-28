@@ -39,3 +39,5 @@ Controller - application logic
 - Mixed (still Query tho) - retrieve and manipulate
   .updateMany()
   .deleteMany()
+
+- Aggregation Pipeline (Model.agregate()) - matching, sorting and calculations of data

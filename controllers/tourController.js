@@ -16,8 +16,8 @@ const aliasTopTours = async (req, res, next) => {
   // we don't need to send response
   // the query fields will be processed by getAllTours
   req.query.limit = '5';
-  req.query.sort = '-ratingAverage,price';
-  req.query.fields = 'name,price,ratingAverage,summary,difficulty';
+  req.query.sort = '-ratingsAverage,price';
+  req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
   next();
 };
 
@@ -122,6 +122,87 @@ const deleteTour = async (req, res) => {
   }
 };
 
+// ▪️ AGGREGATION PIPELINE
+// performs calculations on specified fields
+const getTourStats = async (req, res) => {
+  try {
+    const stats = await Tour.aggregate([
+      {
+        $match: {
+          ratingsAverage: { $gte: 4.5 },
+        },
+      },
+      {
+        $group: {
+          // calculates averages in one big unsorted group
+          // _id: null,
+
+          // performs calc-s on all instances of difficulty
+          _id: { $toUpper: '$difficulty' },
+          numTours: { $sum: 1 }, // adds if more than 1 match
+          numRatings: { $sum: '$ratingsQuantity' },
+          avgRating: { $avg: '$ratingsAverage' },
+          avgPrice: { $avg: '$price' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' },
+        },
+      },
+      { $sort: { avgPrice: 1 } }, // 1 for ascenting
+      // { $match: { _id: { $ne: 'EASY' } } }, // $ne = not equals
+    ]);
+    res.status(200).json({
+      status: 'success',
+      data: { stats },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
+const getMonthlyPlan = async (req, res) => {
+  const year = +req.params.year;
+  const plan = await Tour.aggregate([
+    // $unwind works with arrays, it takes each value
+    // and outputs the parent document for each of these values
+    { $unwind: '$startDates' },
+    {
+      $match: {
+        startDates: {
+          $gte: new Date(`${year}-01-01`),
+          $lte: new Date(`${year}-12-31`),
+        },
+      },
+    },
+    {
+      $group: {
+        _id: { $month: '$startDates' },
+        numTourStarts: { $sum: 1 },
+        tours: { $push: '$name' }, // makes an array and adds tour names to it
+      },
+    },
+    { $addFields: { month: '$_id' } },
+    { $project: { _id: 0 } },
+    { $sort: { numTourStarts: -1 } },
+    { $limit: 6 },
+  ]);
+
+  try {
+    res.status(200).json({
+      status: 'success',
+      results: plan.length,
+      data: { plan },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
 module.exports = {
   getAllTours,
   getTour,
@@ -130,4 +211,6 @@ module.exports = {
   deleteTour,
   checkBody,
   aliasTopTours,
+  getTourStats,
+  getMonthlyPlan,
 };
