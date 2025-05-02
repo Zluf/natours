@@ -108,6 +108,14 @@ tourSchema.post(/^find/, function (docs, next) {
   next();
 });
 
+// AGGREGAION MIDDLEWARE
+
+tourSchema.pre('aggregate', function (next) {
+  // excludes secret tours from aggregation calulations
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  next();
+});
+
 // 2. Create a Model (eq. to Class) that enforces the Schema's requirements
 const Tour = mongoose.model('Tour', tourSchema);
 // Once Tour.create(object) is used a new "tours" db is created (if it didn't already exist)
