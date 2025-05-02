@@ -60,6 +60,10 @@ const tourSchema = new mongoose.Schema(
       select: false, // permanently hides field from output
     },
     startDates: [Date],
+    secretTour: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -78,15 +82,29 @@ tourSchema.pre('save', function (next) {
   next();
 });
 
-tourSchema.pre('save', function (next) {
-  console.log('Will save document...');
+// tourSchema.pre('save', function (next) {
+//   console.log('Will save document...');
+//   next();
+// });
+
+// // DOCUMENT MIDDLEWARE (Pre-Save Hook):
+// // runs after save() and create() events
+// tourSchema.post('save', function (doc, next) {
+//   console.log(doc);
+//   next();
+// });
+
+// QUERY MIDDLEWARE
+// in this case we keep secret tours secret from the user
+// ^ - all the strings that start with <find>
+tourSchema.pre(/^find/, function (next) {
+  this.find({ secretTour: { $ne: true } });
+  this.start = Date.now();
   next();
 });
-
-// DOCUMENT MIDDLEWARE (Pre-Save Hook):
-// runs after save() and create() events
-tourSchema.post('save', function (doc, next) {
-  console.log(doc);
+tourSchema.post(/^find/, function (docs, next) {
+  console.log(`Query took ${Date.now() - this.start} miliseconds`);
+  console.log(docs);
   next();
 });
 
