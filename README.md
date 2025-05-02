@@ -45,3 +45,4 @@ Back-end driven app that serves info on travel tours
 - **Virtual Properties** - business logic in Model layer
 
 - **Document/Query Middleware** - runs before (.pre()) and after (.post()) main Model & Query methods (find, create etc.)
+- **Aggregation Middleware** - runs before (.pre()) and after (.post()) aggration pipelines
