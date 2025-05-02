@@ -122,7 +122,7 @@ const deleteTour = async (req, res) => {
   }
 };
 
-// ▪️ AGGREGATION PIPELINE
+// ▪️ AGGREGATION PIPELINE #1
 // performs calculations on specified fields
 const getTourStats = async (req, res) => {
   try {
@@ -162,6 +162,7 @@ const getTourStats = async (req, res) => {
   }
 };
 
+// AGGRGATION PIPELINE #2
 const getMonthlyPlan = async (req, res) => {
   const year = +req.params.year;
   const plan = await Tour.aggregate([
