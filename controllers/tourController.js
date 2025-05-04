@@ -1,6 +1,7 @@
 const Tour = require('../models/tourModel');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
 
 const checkBody = (req, res, next) => {
   if (!req.body.name || !req.body.price) {
@@ -48,6 +49,12 @@ const getAllTours = catchAsync(async (req, res, next) => {
 const getTour = catchAsync(async (req, res, next) => {
   // shorthad for Tour.findOne({ _id: req.params.id })
   const tour = await Tour.findById(req.params.id);
+
+  if (!tour) {
+    // always has to be returned, otherwise 2 responses will be sent
+    return next(new AppError('No tour found with this ID!', 404));
+  }
+
   res.status(200).json({
     message: 'success',
     data: { tour },
@@ -79,6 +86,12 @@ const updateTour = catchAsync(async (req, res, next) => {
 
 const deleteTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findByIdAndDelete(req.params.id);
+
+  if (!tour) {
+    // always has to be returned, otherwise 2 responses will be sent
+    return next(new AppError('No tour found with this ID!', 404));
+  }
+
   res.status(200).json({
     status: 'success',
     data: null,
