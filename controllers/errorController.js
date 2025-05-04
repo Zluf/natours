@@ -12,6 +12,12 @@ const handleDuplicatedFieldsErrorDB = (err) => {
   return new AppError(message, 400);
 };
 
+const handleValidationErrorDB = (err) => {
+  const errorMessages = Object.values(err.errors).map((err) => err.message);
+  const message = `Invalid Input Data: ${errorMessages.join('. ')}`;
+  return new AppError(message, 400);
+};
+
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -58,6 +64,10 @@ const globalErrorController = (err, req, res, next) => {
 
     // Create Tour: Duplicate doc name
     if (error.code === 11000) error = handleDuplicatedFieldsErrorDB(error);
+
+    // Update Tour: Invalid input data
+    if (error.name === 'ValidationError')
+      error = handleValidationErrorDB(error);
 
     sendErrorProd(error, res);
   }
