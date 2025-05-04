@@ -51,6 +51,7 @@ const getTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id);
 
   if (!tour) {
+    console.log('no tour found');
     // always has to be returned, otherwise 2 responses will be sent
     return next(new AppError('No tour found with this ID!', 404));
   }
