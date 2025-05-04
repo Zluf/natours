@@ -7,9 +7,7 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 
 // ▶️ MIDDLEWAREs
-/** Would intercept and inject itself in every route below
- * but not above. Placement of MW in the code matters
- */
+/** Would intercept and inject itself in every route. Placement of MW in the code matters */
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
@@ -30,5 +28,12 @@ app.use(express.static(`${__dirname}/public`));
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+
+app.all('*', (req, res, next) => {
+  res.status(404).json({
+    status: 'fail',
+    message: `Can't inject ${req.originalUrl} on this server!`,
+  });
+});
 
 module.exports = app;

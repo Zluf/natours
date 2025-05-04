@@ -7,7 +7,8 @@
     "start": "nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
     "db-import": "cd dev-data/data/ && node import-dev-data.js --import",
-    "db-delete": "cd dev-data/data/ && node import-dev-data.js --delete"
+    "db-delete": "cd dev-data/data/ && node import-dev-data.js --delete",
+    "debug": "node --inspect server.js"
   },
   "author": "Slav Konovalov",
   "license": "ISC",
@@ -16,7 +17,8 @@
     "express": "^4.21.2",
     "mongoose": "^5.13.23",
     "morgan": "^1.10.0",
-    "slugify": "^1.6.6"
+    "slugify": "^1.6.6",
+    "validator": "^13.15.0"
   },
   "devDependencies": {
     "eslint": "^8.57.1",
