@@ -1,5 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
+const AppError = require('./utils/appError');
+const globalErrorController = require('./controllers/errorController');
 
 const app = express();
 
@@ -30,29 +32,27 @@ app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
 app.all('*', (req, res, next) => {
+  // 1st Way
   // res.status(404).json({
   //   status: 'fail',
   //   message: `Can't inject ${req.originalUrl} on this server!`,
   // });
 
-  const err = new Error(`Can't inject ${req.originalUrl} on this server!`);
-  err.status = 'fail';
-  err.statusCode = 404;
+  // 2nd Way
+  // const err = new Error(`Can't inject ${req.originalUrl} on this server!`);
+  // err.status = 'fail';
+  // err.statusCode = 404;
 
   // anything passed to next() is an error
   // it will skip all further middleware
   // and get straight into error-handling middleware
-  next(err);
+  // next(err);
+
+  // 3rd Way
+  next(new AppError(`Can't inject ${req.originalUrl} on this server!`, 404));
 });
 
 // ERROR-HANDLING MIDDLEWARE - rec-zed by 4 parameters
-app.use((err, req, res, next) => {
-  err.statusCode = err.statusCode || 500;
-  err.status = err.status || 'error';
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
-});
+app.use(globalErrorController);
 
 module.exports = app;

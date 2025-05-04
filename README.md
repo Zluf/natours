@@ -46,3 +46,8 @@ Back-end driven app that serves info on travel tours
 
 - **Document/Query Middleware** - runs before (.pre()) and after (.post()) main Model & Query methods (find, create etc.)
 - **Aggregation Middleware** - runs before (.pre()) and after (.post()) aggration pipelines
+
+## Terminology notes
+
+- **Operational Errors** - errors that the user will likely encounter
+- **Programming Errors** - errors at development process
