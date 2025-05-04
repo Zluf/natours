@@ -10,20 +10,23 @@ const DB = process.env.DATABASE.replace(
 );
 
 // Connect to MongoDB database
-mongoose
-  .connect(DB, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log('DB connection successful!'));
+mongoose.connect(DB).then(() => console.log('DB connection successful!'));
 
 // console.log(app.get('env'));
 // console.log(process.env.NODE_ENV); // process is Node core module
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`App running on port ${port}...`);
+});
+
+// catches unhandled errors in async code (e.g fail to connect to DB)
+process.on('unhandledRejection', (err) => {
+  console.log(err.name, err.message);
+  console.log('UNHANDLED REJECTION! 💥 Shutting down...');
+
+  // we're letting server finish processing all requests
+  // before it gets shut down
+  server.close(() => process.exit(1));
 });

@@ -36,7 +36,7 @@ const sendErrorProd = (err, res) => {
     });
   } else {
     // Programming or other unknown error
-    // console.error('💥 ERROR:', err);
+    // console.error('💥 ratingsQuantity:', err);
 
     res.status(500).json({
       status: 'error',
