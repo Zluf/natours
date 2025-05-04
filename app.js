@@ -31,6 +31,9 @@ app.use(express.static(`${__dirname}/public`));
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
+// CATCH-ALL MW
+// for all HTTP methods (GET, POST, PUT, DELETE, etc.)
+// and any routes that have not been explicitly defined in the application.
 app.all('*', (req, res, next) => {
   // 1st Way
   // res.status(404).json({
