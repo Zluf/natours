@@ -14,11 +14,12 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, 'Please provide a valid email!'],
   },
-  //   photo: String,
+  photo: String,
   password: {
     type: String,
     required: [true, 'Please provide a password!'],
     minlength: 8,
+    select: false, // false = does not send psw in response on login
   },
   passwordConfirm: {
     // This only works on CREATE and SAVE!!!
@@ -45,6 +46,13 @@ userSchema.pre('save', async function (next) {
 
   next();
 });
+
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword,
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 const User = mongoose.model('User', userSchema);
 
