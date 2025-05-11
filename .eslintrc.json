@@ -23,6 +23,8 @@
     "no-shadow": "off",
     "prefer-object-spread": "off",
     "no-undef": "error",
-    "prefer-const": "off"
+    "prefer-const": "off",
+    "import/no-extraneous-dependencies": "off",
+    "arrow-body-style": "off"
   }
 }

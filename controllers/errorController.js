@@ -1,3 +1,4 @@
+const { JsonWebTokenError } = require('jsonwebtoken');
 const AppError = require('../utils/appError');
 
 const handleCastErrorDB = (err) => {
@@ -18,6 +19,12 @@ const handleValidationErrorDB = (err) => {
   return new AppError(message, 400);
 };
 
+const handleJWTError = () =>
+  new AppError('Invalid token! Please log in again.', 401);
+
+const handleJWTExpiredError = () =>
+  new AppError('Your token has expired! Please log in again.', 401);
+
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -36,7 +43,7 @@ const sendErrorProd = (err, res) => {
     });
   } else {
     // Programming or other unknown error
-    // console.error('💥 ratingsQuantity:', err);
+    // console.error('💥 ERROR:', err);
 
     res.status(500).json({
       status: 'error',
@@ -68,6 +75,10 @@ const globalErrorController = (err, req, res, next) => {
     // Update Tour: Invalid input data
     if (error.name === 'ValidationError')
       error = handleValidationErrorDB(error);
+
+    if (error.name === 'JsonWebTokenError') error = handleJWTError();
+
+    if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
 
     sendErrorProd(error, res);
   }

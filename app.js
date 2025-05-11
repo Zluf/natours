@@ -26,6 +26,11 @@ app.use(express.json());
 // ("/public" should not be added in url)
 app.use(express.static(`${__dirname}/public`));
 
+app.use((req, res, next) => {
+  // console.log(req.headers);
+  next();
+});
+
 // ▶️ ROUTEs
 
 app.use('/api/v1/tours', tourRouter);
